@@ -1,0 +1,84 @@
+﻿@model PagedList.IPagedList<Models.EF.User>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section trangchu{
+    Danh sách người dùng
+
+}
+@section jsFooter{
+    <script src="~/Assets/admin/js/Controller/userController.js"></script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Quản lý người dùng
+
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+
+                <div class="table-responsive">
+                    <button type="button" class="btn btn-default" style="float:right">@Html.ActionLink("Thêm mới", "Create")</button>
+                    <br />
+                    <br />
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tài khoản</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Trạng thái</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row_@item.ID">
+                                    <td>@item.UserName</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Email</td>
+                                    <td>
+                                        @item.Status
+                                    </td>
+                                    <td>
+                                        <a href="/Admin/User/Edit/@item.ID">Sửa</a>
+                                        |
+                                        @Ajax.ActionLink("Xóa", "Delete", new { @id = item.ID }, new AjaxOptions
+                                        {
+                                            Confirm = "Bạn có muốn xóa bản ghi này?",
+                                            OnComplete = "$('row_" + @item.ID + "').remove()",
+                                            HttpMethod = "Delete"
+                                        })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @using (Html.BeginForm("Index", "User", FormMethod.Get))
+                    {
+                        <div id="row">
+                            <div id="col-lg-12">
+                                <div class="col-md-4">
+                                    <input type="text" name="Search" />
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit">Tìm kiếm</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }))
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
